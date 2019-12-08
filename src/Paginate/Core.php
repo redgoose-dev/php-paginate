@@ -1,7 +1,7 @@
 <?php
-namespace redgoose;
+namespace redgoose\Paginate;
 
-class Paginate {
+class Core {
 
   public function __construct()
   {
