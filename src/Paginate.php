@@ -12,6 +12,7 @@ class Paginate {
   {
     return (object)[
       'foo' => 'barrr',
+      'too' => 'uweignowengowerngowegweg',
     ];
   }
 
