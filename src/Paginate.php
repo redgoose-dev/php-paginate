@@ -5,7 +5,14 @@ class Paginate {
 
   public function __construct()
   {
-    return 'hello';
+    //
+  }
+
+  public function bar()
+  {
+    return (object)[
+      'foo' => 'barrr',
+    ];
   }
 
 }
