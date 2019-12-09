@@ -82,14 +82,15 @@ $paginate->update($pref);
 네비게이션 엘리먼트를 만들어줍니다.
 
 ```php
-$element = $paginate->createElements($path);
+$element = $paginate->createElements($classNames, $path);
 
 echo $element;
 ```
 
-| Name  | Type   | Default | Description |
-| ----- | ------ | ------- | ----------- |
-| $path | string | null    | 링크 prefix  |
+| Name        | Type   | Default | Description |
+| ----------- | ------ | ------- | ----------- |
+| $classNames | array  | []      | 엘리먼트 클래스 이름. 배열의 첫번째 값은 대표 이름으로 사용됩니다. |
+| $path       | string | null    | 링크 prefix  |
 
 ### createObject()
 

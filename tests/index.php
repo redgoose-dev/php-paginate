@@ -16,7 +16,7 @@ $paginate = new Paginate((object)[
 
 
 // create elements
-$elements = $paginate->createElements();
+$elements = $paginate->createElements(['apple', 'banana']);
 echo "<nav>";
 echo $elements;
 echo "</nav>";

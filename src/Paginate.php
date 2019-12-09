@@ -130,19 +130,19 @@ class Paginate {
   /**
    * create elements
    *
-   * @param string $className 클래스 이름
+   * @param array $classNames 클래스 이름
    * @param string $path 링크 앞에붙는 경로주소
    * @return string
    */
-  public function createElements($className=null, $path=null)
+  public function createElements(array $classNames=[], $path=null)
   {
     $str = '';
     $path = $path ? $path : './';
-    $className = $className ? $className : 'paginate';
+    $classNames = ($classNames && is_array($classNames) && count($classNames)) ? $classNames : ['paginate'];
 
     if ($this->total > $this->size)
     {
-      $str = "<div class=\"$className\">\n";
+      $str = "<div class=\"".implode(' ', $classNames)."\">\n";
       // prev
       if ($this->block > 0)
       {
@@ -150,7 +150,7 @@ class Paginate {
         $char = ($prevBlock === 1) ? '' : 'page='.$prevBlock;
         $amp = ($this->tails && $char) ? '&' : '';
         $char = ($char || $this->tails) ? '?'.$this->tails.$amp.$char : '';
-        $str .= "<a href=\"{$path}{$char}\" title=\"Prev\" class=\"{$className}__prev\">";
+        $str .= "<a href=\"{$path}{$char}\" title=\"Prev\" class=\"{$classNames[0]}__prev\">";
         $str .= self::icon('prev');
         $str .= "</a>\n";
       }
@@ -175,7 +175,7 @@ class Paginate {
       {
         $nextBlock = (int)(($this->block + 1) * $this->scale + 1);
         $amp = ($this->tails) ? '&' : '';
-        $str .= "<a href=\"{$path}?{$this->tails}{$amp}page={$nextBlock}\" title=\"Next\" class=\"{$className}__next\">";
+        $str .= "<a href=\"{$path}?{$this->tails}{$amp}page={$nextBlock}\" title=\"Next\" class=\"{$classNames[0]}__next\">";
         $str .= self::icon('next');
         $str .= "</a>\n";
       }
