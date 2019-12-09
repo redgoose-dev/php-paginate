@@ -1,7 +1,7 @@
 <?php
 namespace redgoose;
 
-/***
+/**
  * Paginate
  * @package redgoose
  *
@@ -31,11 +31,6 @@ class Paginate {
   protected $scale = 10;
 
   /**
-   * @var int $startPage
-   */
-  protected $startPage = 1;
-
-  /**
    * @var int $tails 파라메터로 만들어지는 주소 뒤에붙는 `&foo=bar`형식으로 된 url
    */
   protected $tails = '';
@@ -62,21 +57,33 @@ class Paginate {
 
   /**
    * create instance
+   * $pref 값 사용에 대해서는 `update()`메서드 참고
    *
-   * @param int $total total items
-   * @param int $page page number
-   * @param array $params url parameter
-   * @param int $size count of list
-   * @param int $scale count of page
-   * @param int $startPage start page number
+   * @param object $pref
    */
-  public function __construct($total=null, $page=null, $size=null, $scale=null, $startPage=null, array $params=[])
+  public function __construct($pref=null)
   {
-    if ($total !== null) $this->total = $total;
-    if ($page !== null) $this->page = $page;
-    if ($size !== null) $this->size = $size;
-    if ($scale !== null) $this->scale = $scale;
-    if ($startPage !== null) $this->startPage = $startPage;
+    $this->update($pref);
+  }
+
+  /**
+   * update properties
+   *
+   * @param object $pref 필요한 설정값 모음
+   *   $pref = (object)[
+   *     'total' => int $pref->total total items
+   *     'page' => int $pref->page page number
+   *     'size' => int $pref->size count of list
+   *     'scale' => int $pref->scale count of page
+   *     'params' => array $pref->params url parameter
+   *   ]
+   */
+  public function update($pref=null)
+  {
+    if (isset($pref->total) && $pref->total) $this->total = (int)$pref->total;
+    if (isset($pref->page) && $pref->page) $this->page = (int)$pref->page;
+    if (isset($pref->size) && $pref->size) $this->size = (int)$pref->size;
+    if (isset($pref->scale) && $pref->scale) $this->scale = (int)$pref->scale;
 
     // calculation
     $this->pageMax = (int)ceil($this->total / $this->size);
@@ -86,9 +93,9 @@ class Paginate {
 
     // make tails url
     $tails = '';
-    if (is_array($params))
+    if (isset($pref->params) && is_array($pref->params))
     {
-      foreach ($params as $key=>$val)
+      foreach ($pref->params as $key=>$val)
       {
         $tails .= ($val) ? "{$key}={$val}&" : "";
       }
@@ -117,7 +124,7 @@ class Paginate {
       default:
         break;
     }
-    return ($path) ? "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\">{$path}</svg>" : '';
+    return ($path) ? "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">{$path}</svg>" : '';
   }
 
   /**
@@ -127,14 +134,15 @@ class Paginate {
    * @param string $path 링크 앞에붙는 경로주소
    * @return string
    */
-  public function createElements($className='paginate', $path=null)
+  public function createElements($className=null, $path=null)
   {
     $str = '';
     $path = $path ? $path : './';
+    $className = $className ? $className : 'paginate';
 
     if ($this->total > $this->size)
     {
-      $str = "<nav class=\"$className\">\n";
+      $str = "<div class=\"$className\">\n";
       // prev
       if ($this->block > 0)
       {
@@ -147,19 +155,19 @@ class Paginate {
         $str .= "</a>\n";
       }
       // middle
-      $this->startPage = (int)($this->block * $this->scale + 1);
-      for ($i = 1; $i <= $this->scale && $this->startPage <= $this->pageMax; $i++, $this->startPage++)
+      $startPage = (int)($this->block * $this->scale + 1);
+      for ($i = 1; $i <= $this->scale && $startPage <= $this->pageMax; $i++, $startPage++)
       {
-        if ((int)$this->startPage === $this->page)
+        if ((int)$startPage === $this->page)
         {
-          $str .= "<strong>{$this->startPage}</strong>\n";
+          $str .= "<strong>{$startPage}</strong>\n";
         }
         else
         {
-          $char = ($this->startPage === 1) ? '' : "page={$this->startPage}";
+          $char = ($startPage === 1) ? '' : "page={$startPage}";
           $amp = ($this->tails && $char) ? '&' : '';
           $char = ($char || $this->tails) ? '?'.$this->tails.$amp.$char : '';
-          $str .= "<a href=\"{$path}{$char}\">{$this->startPage}</a>\n";
+          $str .= "<a href=\"{$path}{$char}\">{$startPage}</a>\n";
         }
       }
       // next
@@ -171,7 +179,7 @@ class Paginate {
         $str .= self::icon('next');
         $str .= "</a>\n";
       }
-      $str .= "</nav>";
+      $str .= "</div>";
     }
 
     return $str;
@@ -201,34 +209,34 @@ class Paginate {
         $prevBlock = (int)(($this->block - 1) * $this->scale + 1);
         $str = ($prevBlock === 1) ? "" : "page={$prevBlock}";
         $amp = ($this->tails && $str) ? "&" : "";
-        $str = ($str || $this->tails) ? $this->tails.$amp.$str : "";
+        $str = ($str || $this->tails) ? '?'.$this->tails.$amp.$str : "";
         $result->prev = (object)[
           'name' => 'prev',
-          'id' => $prevBlock,
+          'no' => $prevBlock,
           'url' => $path.$str,
         ];
       }
       // middle
-      $this->startPage = (int)($this->block * $this->scale + 1);
-      for ($i=1; $i<=$this->scale && $this->startPage<=$this->pageMax; $i++, $this->startPage++)
+      $startPage = (int)($this->block * $this->scale + 1);
+      for ($i=1; $i<=$this->scale && $startPage<=$this->pageMax; $i++, $startPage++)
       {
         $k = $i - 1;
-        if ($this->startPage === $this->page)
+        if ($startPage === $this->page)
         {
           $result->body[$k] = (object)[
-            'name' => $this->startPage,
-            'id' => $this->startPage,
+            'name' => $startPage,
+            'no' => $startPage,
             'active' => true,
           ];
         }
         else
         {
-          $str = ($this->startPage === 1) ? "" : "page=$this->startPage";
-          $amp = ($this->tails && $str) ? "&" : "";
-          $str = ($str || $this->tails) ? $this->tails.$amp.$str : "";
+          $str = ($startPage === 1) ? '' : "page={$startPage}";
+          $amp = ($this->tails && $str) ? '&' : '';
+          $str = ($str || $this->tails) ? '?'.$this->tails.$amp.$str : '';
           $result->body[$k] = (object)[
-            'name' => $this->startPage,
-            'id' => $this->startPage,
+            'name' => $startPage,
+            'no' => $startPage,
             'url' => $path.$str,
           ];
         }
@@ -237,11 +245,11 @@ class Paginate {
       if ($this->pageMax > ($this->block + 1) * $this->scale)
       {
         $nextBlock = (int)(($this->block + 1) * $this->scale + 1);
-        $amp = ($this->tails) ? "&" : "";
+        $amp = ($this->tails) ? '&' : '';
         $result->next = (object)[
           'name' => 'next',
-          'id' => $nextBlock,
-          'url' => "{$path}{$this->tails}{$amp}page={$nextBlock}",
+          'no' => $nextBlock,
+          'url' => "{$path}?{$this->tails}{$amp}page={$nextBlock}",
         ];
       }
     }
