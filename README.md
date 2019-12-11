@@ -8,7 +8,7 @@
 
 다음과 같이 `composer`를 통하여 패키지를 설치합니다.
 
-```
+```shell script
 composer require redgoose/paginate
 ```
 
@@ -42,17 +42,24 @@ $paginate = new Paginate();
 `new` 키워드를 통하여 인스턴스 객체를 만들어서 사용할 수 있습니다.
 
 ```php
-$paginate = new Paginate((object)[
-  'total' => 300,
-  'page' => 1,
-]);
+$paginate = new Paginate($pref);
 ```
 
 
 ## Options
 
+```php
+$paginate = new Paginate((object)[
+  'total' => 300,
+  'page' => 1,
+  'size' => 10,
+  'scale' => 10,
+  'params' => [],
+]);
+```
+
 인스턴스 객체를 만들때 사용하는 옵션들입니다.  
-객체를 만드는 예제소스와 같이 `object` 타입의 객체의 값은 다음과 같습니다.
+객체를 만드는 예제소스와 같이 `object` 타입의 객체값은 다음과 같습니다.
 
 | Name      | Type  | Default | Description |
 | --------- | ----- | ------- | ----------- |
