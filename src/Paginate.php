@@ -92,15 +92,15 @@ class Paginate {
     $this->no = $this->total - $this->offset;
 
     // make tails url
-    $tails = '';
     if (isset($pref->params) && is_array($pref->params))
     {
+      $tails = '';
       foreach ($pref->params as $key=>$val)
       {
         $tails .= ($val) ? "{$key}={$val}&" : "";
       }
+      $this->tails = (string)substr($tails, 0, -1);
     }
-    $this->tails = (string)substr($tails, 0, -1);
   }
 
   /**

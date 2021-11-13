@@ -1,7 +1,10 @@
 {
     "name": "redgoose/paginate",
     "description": "paginate navigation class",
-    "keywords": ["paginate", "navigation"],
+    "keywords": [
+        "paginate",
+        "navigation"
+    ],
     "homepage": "https://github.com/redgoose-dev/paginate",
     "license": "MIT",
     "authors": [
@@ -14,6 +17,8 @@
         "php": ">=7.2.0"
     },
     "autoload": {
-        "classmap": ["src/Paginate.php"]
+        "classmap": [
+            "src/Paginate.php"
+        ]
     }
 }
